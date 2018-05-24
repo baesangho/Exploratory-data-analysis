@@ -1,7 +1,8 @@
 
-와인에 들어있는 여러 성분과 평점 간의 상관계수분석을 통한 탐색적 자료 분석
-if (!require(dplyr)) { install.packages("dplyr") ; library(dplyr) }
+##와인에 들어있는 여러 성분과 평점 간의 상관계수분석을 통한 탐색적 자료 분석
+
 ## 레드와인의 변수들과 평점 간의 상관계수 구함
+
 a <- winequality.red
 b <- winequality.white
 cor.fa <- cor(a$fixed.acidity, a$quality)
@@ -15,12 +16,16 @@ cor.dens <- cor(a$density, a$quality)
 cor.ph <- cor(a$pH, a$quality)
 cor.s <-cor(a$sulphates, a$quality)
 cor.alc <- cor(a$alcohol, a$quality)
+
 ## 표를 만들어 변수들 간의 상관계수 비교
+
 variance <- c("fixed.acidity", "volatile.acidity", "citric.acid", "residual.sugar", "chlorides", "free.sulfur.dioxide",
               "total.sulfur.dioxide", "density", "pH", "sulphates", "alcohol")
 cor.red <- c(cor.fa, cor.va, cor.ca, cor.rs, cor.cl, cor.fsd, cor.tsd, cor.dens, cor.ph, cor.s, cor.alc)
 redwine.correl <- data.frame(variance, cor.red)
+
 ## 화이트와인의 변수들과 평점 간의 상관계수 구함
+
 b <- winequality.white
 corwh.fa <- cor(b$fixed.acidity, b$quality)
 corwh.va <- cor(b$volatile.acidity, b$quality)
@@ -33,12 +38,19 @@ corwh.dens <- cor(b$density, b$quality)
 corwh.ph <- cor(b$pH, b$quality)
 corwh.s <-cor(b$sulphates, b$quality)
 corwh.alc <- cor(b$alcohol, b$quality)
+
 ## 표를 만들어 변수들 간의 상관계수 비교
+
 whitewine.correl <- data.frame(variance, cor.wh)
 cor.wh <- c(corwh.fa, corwh.va, corwh.ca, corwh.rs, corwh.cl, corwh.fsd, corwh.tsd, corwh.dens, corwh.ph, corwh.s, corwh.alc)
+
 ## 레드와인과 화이트와인의 변수들과 평점 간의 상관계수 비교
+
 wine.analyze <- cbind(redwine.correl, cor.wh)
-             variance          cor.red         cor.wh
+
+## 결과 
+
+               variance       cor.red          cor.wh
 1         fixed.acidity      0.12405165     -0.113662831
 2      volatile.acidity     -0.39055778     -0.194722969
 3           citric.acid      0.22637251     -0.009209091
@@ -50,25 +62,28 @@ wine.analyze <- cbind(redwine.correl, cor.wh)
 9                    pH     -0.05773139      0.099427246
 10            sulphates      0.25139708      0.053677877
 11              alcohol      0.47616632      0.435574715
-## 나타난 결과를 보면 평점에 어느정도 영향을 주는 변수는 알코올 뿐인 것으로 보임(상관계수가 0.4이상). 
-하지만 상당히 높은 상관계수를 보이지는 않기 때문에(0.7이하) 알코올의 함량정도만 가지고는 평점을 예측 하기에는 내적 타당성이 다소 부족한듯 함.
 
-## 데이터 분석전에 평점에 진정한 영향을 미치는 변수가 당도일 거라고 생각했으나 당도는 평점에 거의 영향을 주지 않는 것 같음(상관계수가 0.3 이하)
-cor(a$residual.sugar, a$quality) =  0.01373164
-cor(b$residual.sugar, b$quality) = -0.09757683
+## 나타난 결과를 보면 두 와인 모두의 평점에 어느정도 영향을 주는 변수는 알코올 뿐인 것으로 보임(상관계수가 0.3이상). 
+하지만 그렇게 강한 상관관계를 보이지는 않기 때문에(0.7이하) 와인의 알코올 함량정도만 가지고 평점을 예측 하기에는 내적 타당도가 떨어지는 것 같음. 
 
-## 변수간의 상관관계를 살펴봤을때 알코올과 밀도(단위 부피당 무게)사이에서 유의한 상관계수(0.3이상)가 나왔는데,
+## 또한 레드 와인의 경우 아세트산의 함유량과 평점간의 상관계수가 대략 -0.4 정도 인 것으로 보아 아세트산에 의한 신맛이 많이 날수록 품질이 떨어진다고 
+생각할 수 있음. 
+
+## 또, 레드 와인과 화이트 와인 두 종류의 와인에서 산(주석산, 아세트산, 구연산)의 함유량과 평점 간의 상관관계의 차이가 있는 것으로 보아
+(3종류 모두 대략 0.2정도 차이가 남) 레드 와인과 화이트 와인 각각의 평점을 매길때 신맛의 중요도가 다른 것을 알 수 있다. 
+이는 레드 와인과 화이트 와인에 주로 곁들이는 음식의 차이, 숙성 방법의 차이 등에 의해 나타나는 것으로 생각된다.
+
+## 데이터 분석전에 평점에 진정한 영향을 미치는 변수가 당도일 것이라고 생각했으나 당도는 평점에 거의 영향을 주지 않는 것 같음
+(상관계수가 0.3 이하, 오히려 화이트 와인의 경우 그 크기가 작긴 하지만 음의 상관계수를 보임)
+
+## 변수들 간의 상관관계를 살펴봤을때 알코올과 밀도(단위 부피당 무게)사이에서 유의한 상관계수(0.3이상)가 나왔는데, 
 이는 알코올의 밀도가 물의 밀도보다 낮아 알코올 함량이 높을 수록 와인의 밀도가 감소하는 것으로 보임.
+
 cor(a$alcohol, a$density) = -0.4961798
 cor(b$alcohol, b$density) = -0.7801376
 
-## 레드 와인과 화이트 와인의 평점 평균치를 비교해보면 5.64 vs. 5.88로 거의 비슷하고, 
-레드 와인의 평점의 최빈값(681회, 42.6%)은 5점, 화이트 와인 평점의 최빈값(2190회, 44.9%)은 6점임.
+## 레드 와인과 화이트 와인의 평점 평균치를 비교해보면 5.64 vs. 5.88 으로 거의 비슷하고, 레드 와인 평점의 최빈값(681회, 42.6%)은 5점, 화이트 와인 평점의 최빈값(2190회, 44.9%)은 6점임.
+
 mean(a$quality) = 5.636023
-table(a$quality) 
- 3   4   5   6   7   8 
- 10  53 681 638 199  18 
 mean(b$quality) = 5.877909
-table(b$quality)
- 3   4    5    6     7    8   9 
- 20  163 1457 2198  880  175  5
+
